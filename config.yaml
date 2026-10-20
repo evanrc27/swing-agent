@@ -1,0 +1,44 @@
+# ---- Universe (Finviz screener) ----
+finviz:
+  # Finviz screener filter string (same as the "f=" URL param on finviz.com/screener.ashx)
+  # Default: US, mid cap+, avg vol > 1M, price > $10, above SMA200, SMA50 above SMA200
+  filters: "cap_midover,sh_avgvol_o1000,sh_price_o10,ta_sma200_pa,ta_sma50_sa200,geo_usa"
+  max_symbols: 60
+
+# ---- Market data (Bloomberg) ----
+bloomberg:
+  host: "localhost"
+  port: 8194
+  lookback_days: 300
+  ticker_suffix: " US Equity"
+
+# ---- Strategy: trend-following pullback ----
+strategy:
+  rsi_period: 14
+  rsi_entry_max: 45        # buy pullbacks: RSI dipped below this...
+  rsi_turn_up: true        # ...and is now rising
+  atr_period: 14
+  stop_atr_mult: 2.0
+  target_atr_mult: 4.0
+  max_hold_days: 15
+  exit_below_sma: 20       # exit if close < SMA20 after entry
+
+# ---- Risk ----
+risk:
+  risk_per_trade_pct: 1.0      # % of equity risked between entry and stop
+  max_position_pct: 15.0       # max % of equity in one name
+  max_positions: 6
+  max_gross_exposure_pct: 80.0
+  daily_loss_limit_pct: 3.0    # kill switch: halt new entries if equity drops this much intraday
+
+# ---- Execution ----
+broker:
+  kind: "paper"                # "paper" (local simulation) or "alpaca"
+  paper_starting_cash: 100000
+  state_file: "state/paper_account.json"
+  alpaca_base_url: "https://paper-api.alpaca.markets"   # live: https://api.alpaca.markets
+
+# ---- Scheduler (America/New_York) ----
+schedule:
+  run_time: "15:45"            # evaluate & trade shortly before the close
+  weekdays_only: true
